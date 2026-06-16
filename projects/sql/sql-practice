@@ -1,0 +1,196 @@
+-- - CREATE Oganization table 
+CREATE TABLE identity.organizations ( 
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(), 
+	name VARCHAR(150) NOT NULL, 
+	registration_number VARCHAR(50) UNIQUE, 
+	email VARCHAR(255) UNIQUE, 
+	is_active BOOLEAN NOT NULL DEFAULT TRUE, 
+	created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP 
+	)
+
+-- Create users table C
+CREATE TABLE identity.users ( 
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(), 
+	organization_id UUID NOT NULL, 
+	first_name VARCHAR(100) NOT NULL, 
+	last_name VARCHAR(100) NOT NULL, 
+	email VARCHAR(255) UNIQUE NOT NULL, 
+	phone VARCHAR(20), 
+	created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	
+	CONSTRAINT fk_users_organizations
+	FOREIGN KEY (organization_id) 
+	REFERENCES identity.organizations(id) 
+	);
+-- insert data to the org
+INSERT INTO identity.organizations 
+    (name, registration_number, email)
+	VALUES 
+	( 
+	'Xaqiiji Organization', 
+	'ORG-0001', 
+	'xaqiiji@gmail.com'
+	), 
+	( 'Hormuud Telecom',
+	'ORG-0002', 
+	'hormuud@gmail.com' 
+	), 
+	(
+	'Salaam Bank',
+	'ORG-0003',
+	'info@salaam.com'
+	)
+
+-- read org data
+SELECT * FROM identity.organizations; SELECT id, name FROM identity.organizations;
+xaq "e22ea02e-6781-4ef0-91ed-4a103e425d26"
+-- hor "8673fe48-807a-42d4-a34c-e6c0bf62d825" --- create for users
+-- sal "1f50ed1a-7e18-48f2-ae72-db8e3d822f9a" ---- created users for it
+-- Create users for the org
+INSERT INTO identity.users ( 
+  organization_id,
+  first_name,
+  last_name, 
+  email ) 
+  VALUES ( 
+  'e22ea02e-6781-4ef0-91ed-4a103e425d26',
+  'Zak',
+  'Ahmed', 
+  'zaka@gmail.com'
+  ), 
+( 
+  'e22ea02e-6781-4ef0-91ed-4a103e425d26',
+  'Rodo',
+  'Abdi', 
+  'rodoa@gmail.com'
+  ), 
+( 
+  'e22ea02e-6781-4ef0-91ed-4a103e425d26',
+  'Said',
+  'Duran', 
+  'saidd@gmail.com'
+  ), 
+( 
+  'e22ea02e-6781-4ef0-91ed-4a103e425d26',
+  'Nur',
+  'Ali', 
+  'nura@gmail.com'
+  ),
+  ( 
+  'e22ea02e-6781-4ef0-91ed-4a103e425d26',
+  'Bashir',
+  'Kamil', 
+  'bashirk@gmail.com'
+  ), 
+( 
+  'e22ea02e-6781-4ef0-91ed-4a103e425d26',
+  'Xamdi',
+  'Abdi', 
+  'xamdia@gmail.com'
+  )
+
+
+
+
+-- Now we start querying 
+SELECT * FROM 
+identity.users;
+
+
+
+
+-- select specific columns 
+SELECT 
+    first_name,
+	last_name
+FROM identity.users;
+
+
+
+-- get specific user 
+SELECT 
+   first_name,
+   last_name
+FROM identity.users
+WHERE email = 'ahmed@gmail.com';
+
+
+
+SELECT * FROM identity.users 
+WHERE first_name = 'Ahmed'
+OR last_name = 'Ali';
+
+
+
+SELECT * FROM identity.users 
+WHERE first_name = 'Ahmed'
+OR first_name = 'Ali';
+
+-- Sort by Name
+SELECT * FROM identity.users
+ORDER BY first_name;
+
+SELECT * FROM identity.users 
+ORDER BY last_name;
+-- Sort by email
+SELECT * FROM identity.users
+ORDER BY email;
+-- Sort by Name
+SELECT * FROM identity.users
+ORDER BY first_name DESC;
+
+-- Newest Users First
+SELECT * FROM identity.users
+ORDER BY created_at DESC;
+
+-- LIMIT
+-- First 5 Users
+SELECT * FROM identity.users 
+LIMIT 5;
+
+-- last 5 Users
+SELECT * FROM identity.users 
+ORDER BY created_at DESC
+LIMIT 5;
+
+-- Show All Users of an Organization
+
+SELECT *
+FROM identity.users
+WHERE organization_id =
+'e22ea02e-6781-4ef0-91ed-4a103e425d26';
+
+
+-- Search Active Organizations
+SELECT *
+FROM identity.organizations
+WHERE is_active = TRUE;
+
+-- Show Latest Organizations
+SELECT *
+FROM identity.organizations
+ORDER BY created_at DESC
+LIMIT 5;
+
+
+-- Better Search with LIKE
+
+
+SELECT *
+FROM identity.users
+WHERE first_name LIKE 'Ro%';
+
+
+
+SELECT *
+FROM identity.users
+WHERE email LIKE '%gmail%';
+
+
+
+
+
+
+
+
+	
