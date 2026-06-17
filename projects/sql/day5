@@ -1,0 +1,140 @@
+-- Create verifications table 
+CREATE TABLE identity.verifications (
+   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+   user_id UUID NOT NULL, 
+   verification_type VARCHAR(50) NOT NULL,
+   status VARCHAR(20) NOT NULL,
+   processing_time_seconds INTEGER NOT NULL,
+   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+   CONSTRAINT fk_verifications_users
+   FOREIGN KEY (user_id)
+   REFERENCES identity.users(id)
+)
+
+-- select users and copy the id of the user to create verifications 
+SELECT * FROM identity.users;
+462acf16-832b-4c95-9be3-d31e0c0106e9
+
+INSERT INTO identity.verifications 
+(
+  user_id,
+  verification_type,
+  status,
+  processing_time_seconds
+)
+VALUES 
+(
+   '0d379452-bf71-4c9d-9884-716962e87eda',
+   'Business',
+   'Rejected',
+   15
+),
+(
+   '0d379452-bf71-4c9d-9884-716962e87eda',
+   'Citizen',
+   'Rejected',
+   10
+),
+(
+   '0d379452-bf71-4c9d-9884-716962e87eda',
+   'Business',
+   'Approved',
+   15
+),
+(
+   '0d379452-bf71-4c9d-9884-716962e87eda',
+   'Citizen',
+   'Approved',
+   12
+),
+(
+   '0d379452-bf71-4c9d-9884-716962e87eda',
+   'Business',
+   'Approved',
+   10
+),
+(
+   '0d379452-bf71-4c9d-9884-716962e87eda',
+   'Business',
+   'Approved',
+   9
+),
+(
+   '0d379452-bf71-4c9d-9884-716962e87eda',
+   'Citizen',
+   'Approved',
+   13
+),
+(
+   '0d379452-bf71-4c9d-9884-716962e87eda',
+   'Business',
+   'Approved',
+   15
+),
+(
+   '0d379452-bf71-4c9d-9884-716962e87eda',
+   'Citizen',
+   'Approved',
+   8
+),
+(
+   '0d379452-bf71-4c9d-9884-716962e87eda',
+   'Business',
+   'Approved',
+   14
+)
+
+
+
+-- Lets check how many verifications exist
+
+
+SELECT * FROM identity.verifications;-- Result 20 rows exist it
+
+-- How many are approved verificatons?
+SELECT * FROM identity.verifications
+WHERE status = 'Approved';
+-- Result: 15 rows
+-- lets use the COUNT function to get this
+SELECT COUNT(*) FROM identity.verifications
+WHERE status = 'Approved';
+
+
+--How many are rejected ?
+
+SELECT COUNT(*) FROM identity.verifications
+WHERE status = 'Rejected';   -- 5 rows for rejected ones
+
+-- Now lets see average processing time of the verifications 
+SELECT AVG(processing_time_seconds)
+FROM identity.verifications;  -- 12.10 seconds
+
+-- Now if we want to know total time consumed processing verifications, we use like this:
+SELECT SUM(processing_time_seconds)
+FROM identity.verifications -- 242 second, that means all the verifications took this time to process.
+
+-- lets see the fastest verification happened
+SELECT MIN(processing_time_seconds)
+FROM identity.verifications; -- that is the one which took 8 seconds
+ 
+
+-- What about the slowest one
+SELECT MAX(processing_time_seconds)
+FROM identity.verifications; -- it took 15 seconds
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
