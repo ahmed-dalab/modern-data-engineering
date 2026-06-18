@@ -1,0 +1,136 @@
+-- Today we will learn group by and having
+
+-- without group by it gives us total verifications 
+SELECT COUNT(*) 
+FROM identity.verifications;
+
+-- with group by 
+
+SELECT 
+    status, 
+	COUNT(*) AS total_verifications
+FROM identity.verifications
+GROUP BY status;
+
+-- Report by verification type 
+
+SELECT 
+    verification_type,
+	COUNT (*) AS total_verifications
+FROM identity.verifications
+GROUP BY verification_type;
+
+-- Average processing time by status
+SELECT 
+    status,
+	AVG(processing_time_seconds) AS Processing_time
+FROM identity.verifications
+GROUP BY status;
+
+
+
+-- Full verification summary by status
+SELECT 
+      verification_type,
+	  AVG(processing_time_seconds) AS average_time,
+	  MIN(processing_time_seconds) AS fastest_time,
+	  MAX(processing_time_seconds) AS slowest_time
+FROM identity.verifications
+GROUP BY verification_type;
+
+
+
+-- Having 
+
+SELECT 
+    verification_type,
+	COUNT(*) AS total_requests
+FROM identity.verifications
+GROUP BY verification_type
+HAVING COUNT(*) > 5;
+	
+
+
+-- check the verifications
+SELECT * FROM identity.verifications
+
+-- Organization Report 
+
+-- get total user per org
+SELECT 
+    o.name  As Organisations,
+	COUNT(u.id) AS Total_users
+FROM identity.organizations o
+LEFT JOIN identity.users u
+ON o.id = u.organization_id
+GROUP BY o.name;
+
+
+
+
+
+
+-- get total verification per org
+SELECT 
+     o.name AS organisation_name,
+	 COUNT(v.id) AS total_verifications
+FROM identity.organizations o
+LEFT JOIN identity.users u 
+ON o.id = u.organization_id
+LEFT JOIN identity.verifications v
+ON u.id = v.user_id
+GROUP BY o.name;
+
+
+
+
+
+
+
+
+-- get approved verifications per org
+
+
+SELECT 
+     o.name AS organisation_name,
+	 COUNT(v.id) AS total_verifications
+FROM identity.organizations o
+LEFT JOIN identity.users u 
+ON o.id = u.organization_id
+LEFT JOIN identity.verifications v
+ON u.id = v.user_id
+WHERE v.status = 'Rejected'
+GROUP BY o.name;
+
+
+-- show only the organizations having more than 5 verifications 
+SELECT
+    o.name AS organization_name,
+    COUNT(v.id) AS total_verifications
+FROM identity.organizations o
+LEFT JOIN identity.users u
+ON o.id = u.organization_id
+LEFT JOIN identity.verifications v
+ON u.id = v.user_id
+GROUP BY o.name
+HAVING COUNT(v.id) > 5;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
